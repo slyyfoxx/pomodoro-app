@@ -1,0 +1,310 @@
+:root {
+  --bg: #ffffff;      /* page + buttons */
+  --card: #ffe4ec;    /* soft pink timer container */
+  --line: #f6c3d2;
+  --text: #4a2b36;
+  --muted: #9a6b7b;
+  --accent: #d14d75;
+  --ring: 339.292; /* 2 * PI * 54 */
+}
+
+body[data-mode="short"] { --accent: #c0587e; }
+body[data-mode="long"]  { --accent: #a8457a; }
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 24px;
+  text-align: center;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(209, 77, 117, 0.15);
+}
+
+.brand {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  transition: color 0.4s;
+}
+
+h1 { margin: 6px 0 20px; font-size: 1.5rem; }
+
+.modes {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--bg);
+}
+
+.mode {
+  padding: 6px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.mode[aria-selected="true"] { background: var(--line); color: var(--text); }
+
+.ring {
+  position: relative;
+  width: min(240px, 70vw);
+  aspect-ratio: 1;
+  margin: 24px auto;
+}
+
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+.ring circle { fill: none; stroke-width: 8; }
+.track { stroke: var(--line); }
+.progress {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: var(--ring);
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear, stroke 0.4s;
+}
+
+.readout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+}
+
+.time {
+  font-size: clamp(2.8rem, 14vw, 3.6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.status { font-size: 0.8rem; color: var(--muted); }
+
+.controls { display: flex; justify-content: center; gap: 10px; }
+
+.controls button {
+  min-width: 88px;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.controls button:hover { border-color: var(--muted); }
+
+.controls .primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  transition: background 0.4s, border-color 0.4s;
+}
+
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sessions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.sessions strong { color: var(--text); }
+
+.dots { display: flex; gap: 5px; }
+.dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.dots span.on { background: var(--accent); }
+
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.hint { margin: 16px 0 0; font-size: 0.75rem; color: var(--muted); }
+
+/* --- Side decorations --- */
+.card { position: relative; z-index: 1; }
+
+.decor { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+
+.d {
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  fill: currentColor;
+  overflow: visible;
+  animation: drift 6s ease-in-out var(--t) infinite;
+}
+
+.d.cloud   { color: #fde3ec; height: calc(var(--s) / 2); animation-duration: 10s; }
+.d.love    { color: #f7b3c8; }
+.d.star    { color: #ffd9a0; }
+.d.flower  { color: #f9c3d5; }
+#d-flower .mid { fill: #ffe08a; } /* matched on the symbol, applies to every <use> copy */
+.d.sparkle { color: #f5a3c0; animation-name: twinkle; animation-duration: 2.5s; }
+
+@keyframes drift   { 50% { transform: translateY(-10px) rotate(6deg); } }
+@keyframes twinkle { 50% { transform: scale(0.6) rotate(20deg); opacity: 0.5; } }
+
+/* On narrow screens the card fills the width, so keep only a few faint ones */
+@media (max-width: 760px) {
+  .d { opacity: 0.45; }
+  .d.flower, .d.star { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .d { animation: none; }
+}
+
+.music {
+  margin-top: 16px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.music[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+
+/* --- Walking friends --- */
+.critter {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 64px;
+  pointer-events: none; /* never blocks clicks on the app */
+  z-index: 10;
+  will-change: transform;
+}
+
+.critter .flip { width: 100%; height: 100%; transition: transform 0.15s; }
+.critter.left .flip { transform: scaleX(-1); }
+.critter svg { width: 100%; height: 100%; overflow: visible; }
+
+.critter .fur    { fill: #f8ead4; stroke: #d9bf9a; stroke-width: 1.2; }
+.critter .ear-in { fill: #f4b6b6; }
+.critter .tail   { fill: #f8ead4; stroke: #d9bf9a; stroke-width: 1.2; }
+.critter .leaf   { fill: #7ccf8a; }
+.critter .eyes   { fill: #2b2b2b; transform-box: fill-box; transform-origin: center; animation: blink 4s infinite; }
+.critter .cheek  { fill: #f7a8b8; opacity: 0.8; }
+.critter .mouth  { fill: none; stroke: #2b2b2b; stroke-width: 1.2; stroke-linecap: round; }
+.critter .leg    { fill: #e9d2b0; }
+.critter .shadow { fill: rgba(74, 43, 54, 0.15); }
+
+.critter .bob, .critter .leg { transform-box: fill-box; }
+.critter.walking .bob   { animation: bob 0.36s ease-in-out infinite; }
+.critter.walking .leg-a { animation: step 0.36s ease-in-out infinite; }
+.critter.walking .leg-b { animation: step 0.36s ease-in-out infinite reverse; }
+
+.critter.hop svg { animation: hop 0.5s ease-out 2; }
+
+/* Bop to the music while standing still */
+body.music-on .critter:not(.walking):not(.hop) svg { animation: bop 0.85s ease-in-out infinite; }
+@keyframes bop { 25% { transform: rotate(-6deg) translateY(-2px); } 75% { transform: rotate(6deg) translateY(-2px); } }
+
+/* Speech bubble */
+.bubble {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(209, 77, 117, 0.15);
+  animation: pop-in 0.2s ease-out;
+}
+.bubble::after { /* little tail */
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border: 5px solid transparent;
+  border-top-color: #fff;
+}
+@keyframes pop-in { from { transform: translateX(-50%) scale(0.6); opacity: 0; } }
+
+/* Pup colours */
+.dog .fur    { fill: #e3b07a; stroke: #b98552; }
+.dog .leg    { fill: #c9925c; }
+.dog .patch  { fill: #f6dfc2; }
+.dog .ear    { fill: #8a5a3b; }
+.dog .nose   { fill: #3a2a24; }
+.dog .tongue { fill: #f28ca5; }
+.dog .tail   { transform-box: fill-box; transform-origin: 100% 100%; animation: wag 0.6s ease-in-out infinite; }
+
+@keyframes hop   { 40% { transform: translateY(-12px); } }
+@keyframes wag   { 50% { transform: rotate(-18deg); } }
+@keyframes bob   { 50% { transform: translateY(-3px) rotate(2deg); } }
+@keyframes step  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }
+
+.heart {
+  position: fixed;
+  pointer-events: none;
+  z-index: 11;
+  color: #e2668a;
+  font-size: 18px;
+  animation: float-up 1s ease-out forwards;
+}
+
+@keyframes float-up {
+  from { opacity: 1; transform: translateY(0) scale(0.6); }
+  to   { opacity: 0; transform: translateY(-30px) scale(1.2); }
+}
+
+kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: inherit;
+}

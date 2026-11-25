@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusForge Pomodoro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-mode="work">
+  <!-- Decorations around the sides (purely visual) -->
+  <div class="decor" aria-hidden="true">
+    <svg width="0" height="0" style="position:absolute">
+      <defs>
+        <symbol id="d-heart" viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9.5-9A5 5 0 0 1 12 6a5 5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></symbol>
+        <symbol id="d-star" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z"/></symbol>
+        <symbol id="d-sparkle" viewBox="0 0 24 24"><path d="M12 0c1 7 5 11 12 12-7 1-11 5-12 12-1-7-5-11-12-12 7-1 11-5 12-12z"/></symbol>
+        <symbol id="d-flower" viewBox="0 0 24 24"><circle cx="12" cy="5" r="4.5"/><circle cx="19" cy="10" r="4.5"/><circle cx="16.5" cy="18" r="4.5"/><circle cx="7.5" cy="18" r="4.5"/><circle cx="5" cy="10" r="4.5"/><circle class="mid" cx="12" cy="12.5" r="3.5"/></symbol>
+        <symbol id="d-cloud" viewBox="0 0 48 24"><path d="M12 22h26a8 8 0 0 0 0-16 11 11 0 0 0-21-1A8.5 8.5 0 0 0 12 22z"/></symbol>
+      </defs>
+    </svg>
+    <!-- left side -->
+    <svg class="d cloud"   style="left:4%;  top:8%;  --s:110px; --t:0s"><use href="#d-cloud"/></svg>
+    <svg class="d love"   style="left:16%; top:24%; --s:28px;  --t:1s"><use href="#d-heart"/></svg>
+    <svg class="d sparkle" style="left:6%;  top:38%; --s:22px;  --t:.5s"><use href="#d-sparkle"/></svg>
+    <svg class="d flower"  style="left:12%; top:52%; --s:40px;  --t:2s"><use href="#d-flower"/></svg>
+    <svg class="d star"    style="left:3%;  top:66%; --s:26px;  --t:1.5s"><use href="#d-star"/></svg>
+    <svg class="d love"   style="left:18%; top:74%; --s:20px;  --t:3s"><use href="#d-heart"/></svg>
+    <svg class="d flower"  style="left:5%;  top:84%; --s:30px;  --t:.8s"><use href="#d-flower"/></svg>
+    <!-- right side -->
+    <svg class="d cloud"   style="right:5%;  top:16%; --s:90px;  --t:1.2s"><use href="#d-cloud"/></svg>
+    <svg class="d star"    style="right:16%; top:8%;  --s:24px;  --t:2.4s"><use href="#d-star"/></svg>
+    <svg class="d flower"  style="right:13%; top:36%; --s:34px;  --t:.3s"><use href="#d-flower"/></svg>
+    <svg class="d sparkle" style="right:5%;  top:48%; --s:26px;  --t:1.8s"><use href="#d-sparkle"/></svg>
+    <svg class="d love"   style="right:17%; top:60%; --s:30px;  --t:.6s"><use href="#d-heart"/></svg>
+    <svg class="d star"    style="right:7%;  top:72%; --s:20px;  --t:2.8s"><use href="#d-star"/></svg>
+    <svg class="d flower"  style="right:15%; top:86%; --s:28px;  --t:1.4s"><use href="#d-flower"/></svg>
+  </div>
+
+  <main class="card">
+    <p class="brand">FOCUSFORGE</p>
+    <h1>Pomodoro by Thevaseynan</h1>
+
+    <div class="modes" role="tablist" aria-label="Timer mode">
+      <button class="mode" data-mode="work" role="tab">Work</button>
+      <button class="mode" data-mode="short" role="tab">Break</button>
+      <button class="mode" data-mode="long" role="tab">Long break</button>
+    </div>
+
+    <div class="ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="track" cx="60" cy="60" r="54"></circle>
+        <circle class="progress" cx="60" cy="60" r="54"></circle>
+      </svg>
+      <div class="readout">
+        <div id="time" class="time" aria-live="off">25:00</div>
+        <div id="status" class="status" aria-live="polite">Ready when you are</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="toggle" class="primary">Start</button>
+      <button id="reset">Reset</button>
+      <button id="skip" title="Skip to next phase">Skip</button>
+    </div>
+
+    <div class="sessions">
+      <div id="dots" class="dots" aria-hidden="true"></div>
+      <span>Completed sessions <strong id="count">0</strong></span>
+      <button id="clear" class="link" title="Reset counter">clear</button>
+    </div>
+
+    <button id="music" class="music" aria-pressed="false">♫ Lofi off</button>
+    <audio id="lofi" src="lofi.mp3" loop preload="none"></audio>
+
+    <p class="hint"><kbd>Space</kbd> start/pause · <kbd>R</kbd> reset · <kbd>S</kbd> skip · <kbd>M</kbd> music</p>
+  </main>
+
+  <!-- Walking friends: wander around, visit each other, walk to wherever you click -->
+  <div id="kitty" class="critter" aria-hidden="true">
+    <div class="flip">
+      <svg viewBox="0 0 64 64">
+        <ellipse class="shadow" cx="32" cy="60" rx="16" ry="3"></ellipse>
+        <ellipse class="leg leg-a" cx="24" cy="55" rx="5" ry="4"></ellipse>
+        <ellipse class="leg leg-b" cx="40" cy="55" rx="5" ry="4"></ellipse>
+        <g class="bob">
+          <path class="tail" d="M13 42 q-9 -2 -7 -12 q4 4 9 6 z"></path>
+          <path class="fur" d="M15 30 L17 12 L29 23 Z M35 23 L47 12 L49 30 Z"></path>
+          <path class="ear-in" d="M18 25 L19 16 L25 22 Z M39 22 L45 16 L46 25 Z"></path>
+          <ellipse class="fur" cx="32" cy="38" rx="20" ry="17"></ellipse>
+          <path class="leaf" d="M32 22 q-1 -7 6 -9 q0 7 -6 9 z"></path>
+          <g class="eyes">
+            <circle cx="27" cy="36" r="2.6"></circle>
+            <circle cx="41" cy="36" r="2.6"></circle>
+          </g>
+          <ellipse class="cheek" cx="22" cy="42" rx="3.5" ry="2.2"></ellipse>
+          <ellipse class="cheek" cx="46" cy="42" rx="3.5" ry="2.2"></ellipse>
+          <path class="mouth" d="M32 41 q2 2.5 4 0"></path>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div id="doggy" class="critter dog" aria-hidden="true">
+    <div class="flip">
+      <svg viewBox="0 0 64 64">
+        <ellipse class="shadow" cx="32" cy="60" rx="16" ry="3"></ellipse>
+        <ellipse class="leg leg-a" cx="24" cy="55" rx="5" ry="4"></ellipse>
+        <ellipse class="leg leg-b" cx="40" cy="55" rx="5" ry="4"></ellipse>
+        <g class="bob">
+          <path class="fur tail" d="M14 40 q-10 -4 -6 -14 q3 6 8 9 z"></path>
+          <ellipse class="fur" cx="32" cy="37" rx="20" ry="18"></ellipse>
+          <ellipse class="patch" cx="40" cy="33" rx="7" ry="5.5"></ellipse>
+          <ellipse class="ear" cx="15" cy="32" rx="5" ry="10" transform="rotate(20 15 32)"></ellipse>
+          <ellipse class="ear" cx="49" cy="32" rx="5" ry="10" transform="rotate(-20 49 32)"></ellipse>
+          <g class="eyes">
+            <circle cx="27" cy="34" r="2.6"></circle>
+            <circle cx="41" cy="34" r="2.6"></circle>
+          </g>
+          <ellipse class="cheek" cx="22" cy="41" rx="3.5" ry="2.2"></ellipse>
+          <ellipse class="cheek" cx="46" cy="41" rx="3.5" ry="2.2"></ellipse>
+          <ellipse class="nose" cx="34" cy="40" rx="2.8" ry="2"></ellipse>
+          <path class="mouth" d="M31 43 q3 2.5 6 0"></path>
+          <ellipse class="tongue" cx="34" cy="46" rx="1.8" ry="2.2"></ellipse>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
